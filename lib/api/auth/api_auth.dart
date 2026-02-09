@@ -1,7 +1,7 @@
 import 'package:pocketbase/pocketbase.dart';
-import 'package:urology_waiting_list/api/auth/auth_exception.dart';
-import 'package:urology_waiting_list/api/constants/pocketbase_helper.dart';
-import 'package:urology_waiting_list/utils/shared_prefs.dart';
+import 'package:ortho_waiting_list/api/auth/auth_exception.dart';
+import 'package:ortho_waiting_list/api/constants/pocketbase_helper.dart';
+import 'package:ortho_waiting_list/utils/shared_prefs.dart';
 
 class AuthApi {
   const AuthApi();

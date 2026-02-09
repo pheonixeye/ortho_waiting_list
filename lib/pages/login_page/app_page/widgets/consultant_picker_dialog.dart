@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/components/central_error.dart';
-import 'package:urology_waiting_list/components/central_loading.dart';
-import 'package:urology_waiting_list/models/_api_result.dart';
-import 'package:urology_waiting_list/models/doctor.dart';
-import 'package:urology_waiting_list/providers/px_doctors.dart';
+import 'package:ortho_waiting_list/components/central_error.dart';
+import 'package:ortho_waiting_list/components/central_loading.dart';
+import 'package:ortho_waiting_list/models/_api_result.dart';
+import 'package:ortho_waiting_list/models/doctor.dart';
+import 'package:ortho_waiting_list/providers/px_constants.dart';
 
 class ConsultantPickerDialog extends StatefulWidget {
   const ConsultantPickerDialog({super.key});
@@ -17,7 +17,7 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
   Doctor? _doc;
   @override
   Widget build(BuildContext context) {
-    return Consumer<PxDoctors>(
+    return Consumer<PxConstants>(
       builder: (context, d, _) {
         while (d.doctors == null) {
           return const CentralLoading();

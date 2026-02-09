@@ -5,9 +5,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/functions/shell_function.dart';
-import 'package:urology_waiting_list/providers/px_auth.dart';
-import 'package:urology_waiting_list/router/app_router.dart';
+import 'package:ortho_waiting_list/functions/shell_function.dart';
+import 'package:ortho_waiting_list/providers/px_auth.dart';
+import 'package:ortho_waiting_list/router/app_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         //header text
                         Text(
-                          'قسم المسالك البولية',
+                          'قسم جراحة العظام',
                           style: GoogleFonts.inter(
                             fontSize: 24.0,
                             color: const Color(0xFF15224F),

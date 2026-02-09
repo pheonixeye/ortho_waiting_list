@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ortho_waiting_list/models/rank.dart';
+import 'package:ortho_waiting_list/models/speciality.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/components/central_error.dart';
-import 'package:urology_waiting_list/components/central_loading.dart';
-import 'package:urology_waiting_list/extensions/number_translator.dart';
-import 'package:urology_waiting_list/models/_api_result.dart';
-import 'package:urology_waiting_list/models/doctor.dart';
-import 'package:urology_waiting_list/models/operation_dto.dart';
-import 'package:urology_waiting_list/models/waiting_type.dart';
-import 'package:urology_waiting_list/providers/px_auth.dart';
-import 'package:urology_waiting_list/providers/px_doctors.dart';
+import 'package:ortho_waiting_list/components/central_error.dart';
+import 'package:ortho_waiting_list/components/central_loading.dart';
+import 'package:ortho_waiting_list/extensions/number_translator.dart';
+import 'package:ortho_waiting_list/models/_api_result.dart';
+import 'package:ortho_waiting_list/models/doctor.dart';
+import 'package:ortho_waiting_list/models/operation_dto.dart';
+import 'package:ortho_waiting_list/providers/px_auth.dart';
+import 'package:ortho_waiting_list/providers/px_constants.dart';
 
 class CreateNewOperationDtoDialog extends StatefulWidget {
   const CreateNewOperationDtoDialog({
     super.key,
     required this.operative_date,
   });
-  final DateTime operative_date;
+  final DateTime? operative_date;
 
   @override
   State<CreateNewOperationDtoDialog> createState() =>
@@ -27,13 +28,13 @@ class _CreateNewOperationDtoDialogState
     extends State<CreateNewOperationDtoDialog> {
   final formKey = GlobalKey<FormState>();
   late final TextEditingController _patientNameController;
-  late final TextEditingController _patientRankController;
   late final TextEditingController _patientPhoneController;
   late final TextEditingController _patientDiagnosisController;
   late final TextEditingController _patientOperationController;
 
   String? _consultant_id;
-  WaitingType? _type;
+  Speciality? _spec;
+  Rank? _rank;
 
   String? _emptyFieldValidator(String? value) {
     if (value == null || value.isEmpty) {
@@ -46,7 +47,6 @@ class _CreateNewOperationDtoDialogState
   void initState() {
     super.initState();
     _patientNameController = TextEditingController();
-    _patientRankController = TextEditingController();
     _patientPhoneController = TextEditingController();
     _patientDiagnosisController = TextEditingController();
     _patientOperationController = TextEditingController();
@@ -55,7 +55,6 @@ class _CreateNewOperationDtoDialogState
   @override
   void dispose() {
     _patientNameController.dispose();
-    _patientRankController.dispose();
     _patientPhoneController.dispose();
     _patientDiagnosisController.dispose();
     _patientOperationController.dispose();
@@ -64,9 +63,9 @@ class _CreateNewOperationDtoDialogState
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PxDoctors>(
+    return Consumer<PxConstants>(
       builder: (context, d, _) {
-        while (d.doctors == null) {
+        while (d.doctors == null || d.ranks == null || d.specs == null) {
           return const CentralLoading();
         }
         while (d.doctors is ApiErrorResult) {
@@ -77,15 +76,20 @@ class _CreateNewOperationDtoDialogState
         }
 
         final _doctors = (d.doctors as ApiDataResult<List<Doctor>>).data;
+        final _ranks = (d.ranks as ApiDataResult<List<Rank>>).data;
+        final _specs = (d.specs as ApiDataResult<List<Speciality>>).data;
         return AlertDialog(
           contentPadding: const EdgeInsets.all(2),
           insetPadding: const EdgeInsets.all(2),
           title: Row(
             children: [
-              Text(
-                'اضافة عملية ${widget.operative_date.day} / ${widget.operative_date.month} / ${widget.operative_date.year}'
-                    .toArabicNumber(),
-              ),
+              if (widget.operative_date == null)
+                const Text('اضافة عملية')
+              else
+                Text(
+                  'اضافة عملية ${widget.operative_date?.day} / ${widget.operative_date?.month} / ${widget.operative_date?.year}'
+                      .toArabicNumber(),
+                ),
               const Spacer(),
               IconButton.outlined(
                 onPressed: () {
@@ -102,77 +106,67 @@ class _CreateNewOperationDtoDialogState
             child: Form(
               key: formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    title: const Text('نوع الحجز'),
-                    subtitle: FormField<WaitingType>(
-                      builder: (field) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                ...WaitingType.values.map((type) {
-                                  return Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Builder(
-                                        builder: (context) {
-                                          bool _isSelected = _type == type;
-                                          return Card.outlined(
-                                            elevation: _isSelected ? 0 : 6,
-                                            color: _isSelected
-                                                ? Colors.amber
-                                                : null,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: RadioListTile(
-                                                title: Text(type.ar),
-                                                contentPadding:
-                                                    const EdgeInsets.all(0),
-                                                dense: true,
-                                                value: type,
-                                                groupValue: _type,
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    _type = val;
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                })
-                              ],
-                            ),
-                            if (!field.isValid)
-                              Text(
-                                field.errorText ?? '',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                ),
-                              )
-                            else
-                              const SizedBox(),
-                          ],
-                        );
-                      },
-                      validator: (value) {
-                        if (_type == null) {
-                          return 'اختر نوع الحجز عملية او تفتيت';
-                        }
-                        return null;
-                      },
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'نوع الحجز',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                  ListTile(
-                    title: const Text('الاسم'),
-                    subtitle: TextFormField(
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxHeight: 100,
+                      ),
+                      child: DropdownButtonFormField<Speciality>(
+                        isExpanded: true,
+                        alignment: Alignment.center,
+                        hint: const Text(
+                          'اختر نوع الحجز',
+                          textAlign: TextAlign.center,
+                        ),
+                        initialValue: _spec,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        items: [
+                          ..._specs.map((s) {
+                            return DropdownMenuItem<Speciality>(
+                              value: s,
+                              alignment: Alignment.center,
+                              child: Text(
+                                s.name,
+                              ),
+                            );
+                          }),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _spec = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'الاسم',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: _patientNameController,
                       decoration: const InputDecoration(
@@ -182,21 +176,65 @@ class _CreateNewOperationDtoDialogState
                       validator: _emptyFieldValidator,
                     ),
                   ),
-                  ListTile(
-                    title: const Text('الرتبة'),
-                    subtitle: TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _patientRankController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'مجند - امين شرطة - مساعد شرطة - ضابط شرف...',
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'الرتبة',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
                       ),
-                      validator: _emptyFieldValidator,
                     ),
                   ),
-                  ListTile(
-                    title: const Text('رقم الموبايل'),
-                    subtitle: TextFormField(
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxHeight: 100,
+                      ),
+                      child: DropdownButtonFormField<Rank>(
+                        hint: const Text(
+                          'اختر الرتبة',
+                          textAlign: TextAlign.center,
+                        ),
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        isExpanded: true,
+                        alignment: Alignment.center,
+                        initialValue: _rank,
+                        items: [
+                          ..._ranks.map((r) {
+                            return DropdownMenuItem<Rank>(
+                              value: r,
+                              alignment: Alignment.center,
+                              child: Text(
+                                r.rank,
+                              ),
+                            );
+                          }),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _rank = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'رقم الموبايل',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: _patientPhoneController,
                       decoration: const InputDecoration(
@@ -217,35 +255,67 @@ class _CreateNewOperationDtoDialogState
                       ],
                     ),
                   ),
-                  ListTile(
-                    title: const Text('التشخيص'),
-                    subtitle: TextFormField(
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'التشخيص',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: _patientDiagnosisController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'دوالي خصية - حصوة حالب...',
+                        hintText: 'ادخل التشخيص',
                       ),
                       validator: _emptyFieldValidator,
                     ),
                   ),
-                  ListTile(
-                    title: const Text('العملية'),
-                    subtitle: TextFormField(
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'العملية',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: _patientOperationController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'منظار كلي - منظار مرن - ورم مثانة منظار...',
+                        hintText: 'ادخل قرار الاستشاري',
                       ),
                       validator: _emptyFieldValidator,
                     ),
                   ),
-                  ListTile(
-                    title: const Text('الاستشاري'),
-                    subtitle: DropdownButtonFormField<String>(
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'الاستشاري',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownButtonFormField<String>(
+                      hint: const Text(
+                        'اختر الاستشاري',
+                        textAlign: TextAlign.center,
+                      ),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       alignment: Alignment.center,
+                      isExpanded: true,
                       items: [
                         ..._doctors.map((doc) {
                           return DropdownMenuItem<String>(
@@ -255,7 +325,7 @@ class _CreateNewOperationDtoDialogState
                           );
                         })
                       ],
-                      value: _consultant_id,
+                      initialValue: _consultant_id,
                       onChanged: (value) {
                         setState(() {
                           _consultant_id = value;
@@ -281,16 +351,18 @@ class _CreateNewOperationDtoDialogState
                     final data = OperationDTO(
                       id: '',
                       name: _patientNameController.text,
-                      rank: _patientRankController.text,
+                      rank: _rank?.id ?? '',
                       phone: _patientPhoneController.text,
                       diagnosis: _patientDiagnosisController.text,
                       operation: _patientOperationController.text,
-                      consultant: _consultant_id!,
+                      consultant: _consultant_id ?? '',
                       added_by: context.read<PxAuth>().doc_id,
-                      type: _type!.name,
+                      subspeciality: _spec?.id ?? '',
                       attended: false,
                       postponed: 0,
-                      operative_date: widget.operative_date.toIso8601String(),
+                      operative_date:
+                          widget.operative_date?.toIso8601String() ?? '',
+                      case_images_urls: const [],
                     );
                     Navigator.pop(context, data);
                   }

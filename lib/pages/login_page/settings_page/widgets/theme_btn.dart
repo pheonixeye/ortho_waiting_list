@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/providers/px_theme.dart';
+import 'package:ortho_waiting_list/providers/px_theme.dart';
 
 class ThemeBtn extends StatelessWidget {
   const ThemeBtn({super.key});

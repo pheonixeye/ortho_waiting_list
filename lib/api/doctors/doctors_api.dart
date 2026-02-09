@@ -1,6 +1,6 @@
-import 'package:urology_waiting_list/api/constants/pocketbase_helper.dart';
-import 'package:urology_waiting_list/models/_api_result.dart';
-import 'package:urology_waiting_list/models/doctor.dart';
+import 'package:ortho_waiting_list/api/constants/pocketbase_helper.dart';
+import 'package:ortho_waiting_list/models/_api_result.dart';
+import 'package:ortho_waiting_list/models/doctor.dart';
 
 class DoctorsApi {
   const DoctorsApi();
@@ -15,10 +15,11 @@ class DoctorsApi {
           await PocketbaseHelper.pb.collection(_collection).getFullList(
                 expand: _expand,
               );
+      // print(_response);
       try {
         _doctors = _response.map((e) => Doctor.fromRecordModel(e)).toList();
       } catch (e) {
-        print('parsing Error => ${e.toString()}');
+        // print('parsing Error => ${e.toString()}');
         return ApiErrorResult<List<Doctor>>(
           errorCode: 2,
           originalErrorMessage: 'Data Parsing Error => ${e.toString()}',

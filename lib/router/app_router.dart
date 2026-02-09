@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/api/waiting_list/waiting_list_api.dart';
-import 'package:urology_waiting_list/pages/login_page/app_page/app_page.dart';
-import 'package:urology_waiting_list/pages/login_page/login_page.dart';
-import 'package:urology_waiting_list/pages/login_page/settings_page/settings_page.dart';
-import 'package:urology_waiting_list/providers/px_auth.dart';
-import 'package:urology_waiting_list/providers/px_operations.dart';
-import 'package:urology_waiting_list/utils/utils.dart';
+import 'package:ortho_waiting_list/api/waiting_list/waiting_list_api.dart';
+import 'package:ortho_waiting_list/pages/login_page/app_page/app_page.dart';
+import 'package:ortho_waiting_list/pages/login_page/login_page.dart';
+import 'package:ortho_waiting_list/pages/login_page/settings_page/settings_page.dart';
+import 'package:ortho_waiting_list/providers/px_auth.dart';
+import 'package:ortho_waiting_list/providers/px_operations.dart';
+import 'package:ortho_waiting_list/utils/utils.dart';
 
 class AppRouter {
   static const login = '/';

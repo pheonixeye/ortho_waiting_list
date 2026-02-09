@@ -1,13 +1,8 @@
 import 'package:intl/intl.dart';
-import 'package:urology_waiting_list/api/constants/pocketbase_helper.dart';
-import 'package:urology_waiting_list/api/notify/sms_sender.dart';
-import 'package:urology_waiting_list/logic/sms_generator.dart';
-import 'package:urology_waiting_list/models/_api_result.dart';
-import 'package:urology_waiting_list/models/notification_type.dart';
-import 'package:urology_waiting_list/models/operation_dto.dart';
-import 'package:urology_waiting_list/models/operation_expanded.dart';
-import 'package:urology_waiting_list/models/payload.dart';
-import 'package:urology_waiting_list/models/waiting_type.dart';
+import 'package:ortho_waiting_list/api/constants/pocketbase_helper.dart';
+import 'package:ortho_waiting_list/models/_api_result.dart';
+import 'package:ortho_waiting_list/models/operation_dto.dart';
+import 'package:ortho_waiting_list/models/operation_expanded.dart';
 
 class WaitingListApi {
   const WaitingListApi();
@@ -17,36 +12,20 @@ class WaitingListApi {
     'added_by.speciality_id',
     'consultant',
     'consultant.speciality_id',
+    'subspeciality',
+    'rank',
   ];
   static final String _expand = _expList.join(',');
 
-  static const String _collection = 'urology_waiting_list';
+  static const String _collection = 'waiting_list';
 
   Future<void> createOperation(
     OperationDTO dto,
   ) async {
-    final _result = await PocketbaseHelper.pb.collection(_collection).create(
+    await PocketbaseHelper.pb.collection(_collection).create(
           body: dto.toJson(),
           expand: _expand,
         );
-
-    final _operation = OperationExpanded.fromRecordModel(_result);
-
-    final payload = Payload(
-      type: NotificationType.create,
-      operation: _operation,
-    );
-
-    final sms = switch (_operation.type) {
-      WaitingType.eswl => SmsGenerator(payload: payload).generateESWLSms(),
-      WaitingType.operative =>
-        SmsGenerator(payload: payload).generateOperativeSms(),
-    };
-
-    await SmsSender(
-      phone: _operation.phone,
-      sms: sms,
-    ).sendSms();
   }
 
   Future<ApiResult<List<OperationExpanded>>> fetchOperationsOfDateRange({
@@ -62,7 +41,7 @@ class WaitingListApi {
           await PocketbaseHelper.pb.collection(_collection).getFullList(
                 expand: _expand,
                 filter:
-                    "operative_date >= '$_dateOfOperation' && operative_date <= '$_dateAfterOperation'",
+                    "operative_date >= '$_dateOfOperation' && operative_date <= '$_dateAfterOperation' && operative_date != ''",
               );
       try {
         _operations =
@@ -80,11 +59,40 @@ class WaitingListApi {
     }
   }
 
+  Future<ApiResult<List<OperationExpanded>>> fetchUnregisteredOperations({
+    required int page,
+  }) async {
+    late final List<OperationExpanded> _operations;
+    try {
+      final _response =
+          await PocketbaseHelper.pb.collection(_collection).getList(
+                expand: _expand,
+                filter: "operative_date = ''",
+                sort: '-created',
+                page: page,
+              );
+      try {
+        _operations = _response.items
+            .map((e) => OperationExpanded.fromRecordModel(e))
+            .toList();
+      } catch (e) {
+        print('parsing Error => ${e.toString()}');
+      }
+
+      return ApiDataResult<List<OperationExpanded>>(data: _operations);
+    } catch (e) {
+      return ApiErrorResult<List<OperationExpanded>>(
+        errorCode: 1,
+        originalErrorMessage: e.toString(),
+      );
+    }
+  }
+
   Future<void> postponeOperation({
     required OperationExpanded operation,
     required DateTime operative_date,
   }) async {
-    final _result = await PocketbaseHelper.pb.collection(_collection).update(
+    await PocketbaseHelper.pb.collection(_collection).update(
           operation.id,
           body: {
             'operative_date': operative_date.toIso8601String(),
@@ -92,25 +100,19 @@ class WaitingListApi {
           },
           expand: _expand,
         );
+  }
 
-    final newOperation = OperationExpanded.fromRecordModel(_result);
-
-    final payload = Payload(
-      type: NotificationType.update,
-      operation: operation,
-      newOperation: newOperation,
-    );
-
-    final sms = switch (newOperation.type) {
-      WaitingType.eswl => SmsGenerator(payload: payload).generateESWLSms(),
-      WaitingType.operative =>
-        SmsGenerator(payload: payload).generateOperativeSms(),
-    };
-
-    await SmsSender(
-      phone: operation.phone,
-      sms: sms,
-    ).sendSms();
+  Future<void> scheduleOperation({
+    required String operation_id,
+    required DateTime operative_date,
+  }) async {
+    await PocketbaseHelper.pb.collection(_collection).update(
+          operation_id,
+          body: {
+            'operative_date': operative_date.toIso8601String(),
+          },
+          expand: _expand,
+        );
   }
 
   Future<void> changeConsultant({

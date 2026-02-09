@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
-import 'package:urology_waiting_list/models/notification_type.dart';
-import 'package:urology_waiting_list/models/operation_expanded.dart';
+import 'package:ortho_waiting_list/models/notification_type.dart';
+import 'package:ortho_waiting_list/models/operation_expanded.dart';
 
 class Payload extends Equatable {
   final NotificationType type;

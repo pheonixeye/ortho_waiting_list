@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/logic/constants.dart';
-import 'package:urology_waiting_list/pages/login_page/settings_page/widgets/change_password_btn.dart';
-import 'package:urology_waiting_list/pages/login_page/settings_page/widgets/logout_btn.dart';
-import 'package:urology_waiting_list/pages/login_page/settings_page/widgets/theme_btn.dart';
-import 'package:urology_waiting_list/providers/px_auth.dart';
+import 'package:ortho_waiting_list/logic/constants.dart';
+import 'package:ortho_waiting_list/pages/login_page/settings_page/widgets/change_password_btn.dart';
+import 'package:ortho_waiting_list/pages/login_page/settings_page/widgets/logout_btn.dart';
+import 'package:ortho_waiting_list/pages/login_page/settings_page/widgets/theme_btn.dart';
+import 'package:ortho_waiting_list/providers/px_auth.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

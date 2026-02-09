@@ -1,23 +1,24 @@
 import 'package:equatable/equatable.dart';
+import 'package:ortho_waiting_list/models/rank.dart';
+import 'package:ortho_waiting_list/models/speciality.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-import 'package:urology_waiting_list/models/doctor.dart';
-import 'package:urology_waiting_list/models/app_user.dart';
-import 'package:urology_waiting_list/models/waiting_type.dart';
+import 'package:ortho_waiting_list/models/doctor.dart';
+import 'package:ortho_waiting_list/models/app_user.dart';
 
 class OperationExpanded extends Equatable {
   final String id;
   final String name;
-  final String rank;
+  final Rank rank;
   final String phone;
   final String diagnosis;
   final String operation;
-  final DateTime operative_date;
+  final DateTime? operative_date;
   final bool attended;
   final AppUser added_by;
   final Doctor consultant;
   final num postponed;
-  final WaitingType type;
+  final Speciality subspeciality;
 
   const OperationExpanded({
     required this.id,
@@ -31,13 +32,13 @@ class OperationExpanded extends Equatable {
     required this.added_by,
     required this.consultant,
     required this.postponed,
-    required this.type,
+    required this.subspeciality,
   });
 
   OperationExpanded copyWith({
     String? id,
     String? name,
-    String? rank,
+    Rank? rank,
     String? phone,
     String? diagnosis,
     String? operation,
@@ -46,7 +47,7 @@ class OperationExpanded extends Equatable {
     AppUser? added_by,
     Doctor? consultant,
     num? postponed,
-    WaitingType? type,
+    Speciality? subspeciality,
   }) {
     return OperationExpanded(
       id: id ?? this.id,
@@ -60,7 +61,7 @@ class OperationExpanded extends Equatable {
       added_by: added_by ?? this.added_by,
       consultant: consultant ?? this.consultant,
       postponed: postponed ?? this.postponed,
-      type: type ?? this.type,
+      subspeciality: subspeciality ?? this.subspeciality,
     );
   }
 
@@ -68,16 +69,16 @@ class OperationExpanded extends Equatable {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'rank': rank,
+      'rank': rank.toJson(),
       'phone': phone,
       'diagnosis': diagnosis,
       'operation': operation,
-      'operative_date': operative_date.toIso8601String(),
+      'operative_date': operative_date?.toIso8601String(),
       'attended': attended,
       'added_by': added_by.toJson(),
       'consultant': consultant.toJson(),
       'postponed': postponed,
-      'type': type.name,
+      'type': subspeciality.toJson(),
     };
   }
 
@@ -85,7 +86,7 @@ class OperationExpanded extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       id,
       name,
@@ -105,18 +106,20 @@ class OperationExpanded extends Equatable {
     return OperationExpanded(
       id: record.getStringValue('id'),
       name: record.getStringValue('name'),
-      rank: record.getStringValue('rank'),
+      rank: Rank.fromJson(record.get<RecordModel>('expand.rank').toJson()),
       phone: record.getStringValue('phone'),
       diagnosis: record.getStringValue('diagnosis'),
       operation: record.getStringValue('operation'),
-      operative_date: DateTime.parse(record.getStringValue('operative_date')),
+      operative_date:
+          DateTime.tryParse(record.getStringValue('operative_date')),
       attended: record.getBoolValue('attended'),
       added_by:
           AppUser.fromRecordModel(record.get<RecordModel>('expand.added_by')),
       consultant:
           Doctor.fromRecordModel(record.get<RecordModel>('expand.consultant')),
       postponed: record.getDoubleValue('postponed'),
-      type: WaitingType.fromString(record.getStringValue('type')),
+      subspeciality: Speciality.fromJson(
+          record.get<RecordModel>('expand.subspeciality').toJson()),
     );
   }
 }

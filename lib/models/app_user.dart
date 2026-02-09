@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-import 'package:urology_waiting_list/models/speciality.dart';
+import 'package:ortho_waiting_list/models/speciality.dart';
 
 class AppUser extends Equatable {
   final String id;

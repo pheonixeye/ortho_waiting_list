@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:urology_waiting_list/components/central_loading.dart';
-import 'package:urology_waiting_list/components/main_snackbar.dart';
+import 'package:ortho_waiting_list/components/central_loading.dart';
+import 'package:ortho_waiting_list/components/main_snackbar.dart';
 
 ///Shell function encapsulating loading & error handling logic in the UI
 Future<void> shellFunction(

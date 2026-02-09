@@ -1,4 +1,4 @@
-# urology_waiting_list
+# ortho_waiting_list
 
 A new Flutter project.
 

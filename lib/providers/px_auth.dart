@@ -1,8 +1,8 @@
 //
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
-import 'package:urology_waiting_list/api/auth/api_auth.dart';
-import 'package:urology_waiting_list/models/app_user.dart';
+import 'package:ortho_waiting_list/api/auth/api_auth.dart';
+import 'package:ortho_waiting_list/models/app_user.dart';
 
 class PxAuth extends ChangeNotifier {
   final AuthApi api;

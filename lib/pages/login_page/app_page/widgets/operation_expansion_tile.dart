@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:ortho_waiting_list/api/rank_api/rank_api.dart';
+import 'package:ortho_waiting_list/api/specialities_api/spec_api.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/api/doctors/doctors_api.dart';
-import 'package:urology_waiting_list/functions/shell_function.dart';
-import 'package:urology_waiting_list/models/doctor.dart';
-import 'package:urology_waiting_list/models/operation_expanded.dart';
-import 'package:urology_waiting_list/models/waiting_type.dart';
-import 'package:urology_waiting_list/pages/login_page/app_page/widgets/consultant_picker_dialog.dart';
-import 'package:urology_waiting_list/providers/px_doctors.dart';
-import 'package:urology_waiting_list/providers/px_operations.dart';
-import 'package:urology_waiting_list/providers/px_theme.dart';
+import 'package:ortho_waiting_list/api/doctors/doctors_api.dart';
+import 'package:ortho_waiting_list/functions/shell_function.dart';
+import 'package:ortho_waiting_list/models/doctor.dart';
+import 'package:ortho_waiting_list/models/operation_expanded.dart';
+import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/consultant_picker_dialog.dart';
+import 'package:ortho_waiting_list/providers/px_constants.dart';
+import 'package:ortho_waiting_list/providers/px_operations.dart';
+import 'package:ortho_waiting_list/providers/px_theme.dart';
 import 'package:web/web.dart' as web;
 
 class OperationExpansionTile extends StatelessWidget {
@@ -41,16 +42,25 @@ class OperationExpansionTile extends StatelessWidget {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Card.outlined(
-                  elevation: 6,
-                  color: switch (operation.type) {
-                    WaitingType.eswl => Colors.blue,
-                    WaitingType.operative => Colors.amber,
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(operation.type.ar),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    Card.outlined(
+                      elevation: 6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(operation.rank.rank),
+                      ),
+                    ),
+                    Card.outlined(
+                      elevation: 6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(operation.subspeciality.name),
+                      ),
+                    ),
+                  ],
                 ),
                 Text(operation.name),
                 Row(
@@ -107,8 +117,10 @@ class OperationExpansionTile extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return ChangeNotifierProvider(
-                              create: (context) => PxDoctors(
-                                api: const DoctorsApi(),
+                              create: (context) => PxConstants(
+                                doctors_api: const DoctorsApi(),
+                                ranks_api: const RankApi(),
+                                spec_api: const SpecApi(),
                               ),
                               child: const ConsultantPickerDialog(),
                             );

@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:pocketbase/pocketbase.dart';
 
-import 'package:urology_waiting_list/models/speciality.dart';
+import 'package:ortho_waiting_list/models/speciality.dart';
 
 class Doctor extends Equatable {
   final String id;
   final String name;
-  final Speciality speciality;
+  final List<Speciality> speciality;
 
   const Doctor({
     required this.id,
@@ -17,7 +17,7 @@ class Doctor extends Equatable {
   Doctor copyWith({
     String? id,
     String? name,
-    Speciality? speciality,
+    List<Speciality>? speciality,
   }) {
     return Doctor(
       id: id ?? this.id,
@@ -30,18 +30,18 @@ class Doctor extends Equatable {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'speciality': speciality.toJson(),
+      'speciality': speciality.map((e) => e.toJson()).toList(),
     };
   }
 
-  factory Doctor.fromJson(Map<String, dynamic> map) {
-    return Doctor(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      speciality:
-          Speciality.fromJson(map['speciality'] as Map<String, dynamic>),
-    );
-  }
+  // factory Doctor.fromJson(Map<String, dynamic> map) {
+  //   return Doctor(
+  //     id: map['id'] as String,
+  //     name: map['name'] as String,
+  //     speciality:
+  //         Speciality.fromJson(map['speciality'] as Map<String, dynamic>),
+  //   );
+  // }
 
   @override
   bool get stringify => true;
@@ -53,8 +53,10 @@ class Doctor extends Equatable {
     return Doctor(
       id: record.id,
       name: record.getStringValue('name'),
-      speciality: Speciality.fromJson(
-          record.get<RecordModel>('expand.speciality_id').toJson()),
+      speciality: record
+          .get<List<RecordModel>>('expand.speciality_id')
+          .map((e) => Speciality.fromJson(e.toJson()))
+          .toList(),
     );
   }
 }

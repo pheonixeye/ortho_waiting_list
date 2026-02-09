@@ -1,6 +1,6 @@
 {
-    "name": "urology_waiting_list",
-    "short_name": "urology_waiting_list",
+    "name": "ortho_waiting_list",
+    "short_name": "ortho_waiting_list",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:urology_waiting_list/utils/shared_prefs.dart';
+import 'package:ortho_waiting_list/utils/shared_prefs.dart';
 
 class PxTheme extends ChangeNotifier {
   PxTheme() {

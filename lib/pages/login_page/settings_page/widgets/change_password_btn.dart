@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:urology_waiting_list/components/main_snackbar.dart';
-import 'package:urology_waiting_list/functions/shell_function.dart';
-import 'package:urology_waiting_list/providers/px_auth.dart';
+import 'package:ortho_waiting_list/components/main_snackbar.dart';
+import 'package:ortho_waiting_list/functions/shell_function.dart';
+import 'package:ortho_waiting_list/providers/px_auth.dart';
 
 class ChangePasswordBtn extends StatelessWidget {
   const ChangePasswordBtn({super.key});

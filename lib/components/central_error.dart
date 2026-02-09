@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:urology_waiting_list/functions/shell_function.dart';
+import 'package:ortho_waiting_list/functions/shell_function.dart';
 
 class CentralError extends StatelessWidget {
   const CentralError({
