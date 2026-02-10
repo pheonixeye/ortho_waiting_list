@@ -19,6 +19,7 @@ class OperationExpanded extends Equatable {
   final Doctor consultant;
   final num postponed;
   final Speciality subspeciality;
+  final List<String> case_images_urls;
 
   const OperationExpanded({
     required this.id,
@@ -33,6 +34,7 @@ class OperationExpanded extends Equatable {
     required this.consultant,
     required this.postponed,
     required this.subspeciality,
+    required this.case_images_urls,
   });
 
   OperationExpanded copyWith({
@@ -48,6 +50,7 @@ class OperationExpanded extends Equatable {
     Doctor? consultant,
     num? postponed,
     Speciality? subspeciality,
+    List<String>? case_images_urls,
   }) {
     return OperationExpanded(
       id: id ?? this.id,
@@ -62,6 +65,7 @@ class OperationExpanded extends Equatable {
       consultant: consultant ?? this.consultant,
       postponed: postponed ?? this.postponed,
       subspeciality: subspeciality ?? this.subspeciality,
+      case_images_urls: case_images_urls ?? this.case_images_urls,
     );
   }
 
@@ -78,7 +82,8 @@ class OperationExpanded extends Equatable {
       'added_by': added_by.toJson(),
       'consultant': consultant.toJson(),
       'postponed': postponed,
-      'type': subspeciality.toJson(),
+      'subspeciality': subspeciality.toJson(),
+      'case_images_urls': case_images_urls.map((e) => e.toString()).toList(),
     };
   }
 
@@ -99,6 +104,7 @@ class OperationExpanded extends Equatable {
       added_by,
       consultant,
       postponed,
+      case_images_urls,
     ];
   }
 
@@ -120,6 +126,7 @@ class OperationExpanded extends Equatable {
       postponed: record.getDoubleValue('postponed'),
       subspeciality: Speciality.fromJson(
           record.get<RecordModel>('expand.subspeciality').toJson()),
+      case_images_urls: record.getListValue<String>('case_images_urls'),
     );
   }
 }

@@ -137,4 +137,16 @@ class WaitingListApi {
       },
     );
   }
+
+  Future<void> addImageToOperation({
+    required String operationId,
+    required String imagePublicId,
+  }) async {
+    await PocketbaseHelper.pb.collection(_collection).update(
+      operationId,
+      body: {
+        'case_images_urls+': imagePublicId,
+      },
+    );
+  }
 }

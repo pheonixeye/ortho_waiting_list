@@ -126,4 +126,16 @@ class PxOperations extends ChangeNotifier {
     // print(id);
     notifyListeners();
   }
+
+  Future<void> addImageToOperation({
+    required String operationId,
+    required String imagePublicId,
+  }) async {
+    await api.addImageToOperation(
+      operationId: operationId,
+      imagePublicId: imagePublicId,
+    );
+
+    await init();
+  }
 }
