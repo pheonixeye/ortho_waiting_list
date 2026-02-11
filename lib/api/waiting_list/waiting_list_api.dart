@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:ortho_waiting_list/api/constants/pocketbase_helper.dart';
 import 'package:ortho_waiting_list/models/_api_result.dart';
+import 'package:ortho_waiting_list/models/case_image.dart';
 import 'package:ortho_waiting_list/models/operation_dto.dart';
 import 'package:ortho_waiting_list/models/operation_expanded.dart';
 
@@ -14,10 +15,13 @@ class WaitingListApi {
     'consultant.speciality_id',
     'subspeciality',
     'rank',
+    'images_ids'
   ];
   static final String _expand = _expList.join(',');
 
   static const String _collection = 'waiting_list';
+
+  static const String _case_images_collection = 'case_images';
 
   Future<void> createOperation(
     OperationDTO dto,
@@ -102,6 +106,19 @@ class WaitingListApi {
         );
   }
 
+  Future<void> deleteScheduleForOperation({
+    required OperationExpanded operation,
+  }) async {
+    await PocketbaseHelper.pb.collection(_collection).update(
+          operation.id,
+          body: {
+            'operative_date': '',
+            'postponed': operation.postponed + 1,
+          },
+          expand: _expand,
+        );
+  }
+
   Future<void> scheduleOperation({
     required String operation_id,
     required DateTime operative_date,
@@ -139,14 +156,27 @@ class WaitingListApi {
   }
 
   Future<void> addImageToOperation({
-    required String operationId,
-    required String imagePublicId,
+    required OperationExpanded operationExpanded,
+    required CaseImage caseImage,
   }) async {
+    final _imageCreateRequest =
+        await PocketbaseHelper.pb.collection(_case_images_collection).create(
+              body: caseImage.toJson(),
+            );
     await PocketbaseHelper.pb.collection(_collection).update(
-      operationId,
+      operationExpanded.id,
       body: {
-        'case_images_urls+': imagePublicId,
+        'images_ids+': _imageCreateRequest.id,
       },
     );
+  }
+
+  Future<void> removeImageFromOperation({
+    required OperationExpanded operationExpanded,
+    required CaseImage caseImage,
+  }) async {
+    await PocketbaseHelper.pb.collection(_case_images_collection).delete(
+          caseImage.id,
+        );
   }
 }

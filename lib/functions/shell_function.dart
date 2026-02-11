@@ -9,6 +9,7 @@ Future<void> shellFunction(
   String sucessMsg = '',
   Function? onCatch,
   Duration duration = const Duration(seconds: 10),
+  String? progressMessage,
 }) async {
   late BuildContext _loadingContext;
   try {
@@ -20,7 +21,9 @@ Future<void> shellFunction(
           context: context,
           builder: (context) {
             _loadingContext = context;
-            return const CentralLoading();
+            return CentralLoading(
+              progressMessage: progressMessage,
+            );
           });
     }
     await Future.delayed(const Duration(milliseconds: 100));

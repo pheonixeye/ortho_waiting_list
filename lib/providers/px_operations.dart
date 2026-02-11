@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ortho_waiting_list/api/waiting_list/waiting_list_api.dart';
 import 'package:ortho_waiting_list/models/_api_result.dart';
+import 'package:ortho_waiting_list/models/case_image.dart';
 import 'package:ortho_waiting_list/models/doctor.dart';
 import 'package:ortho_waiting_list/models/operation_dto.dart';
 import 'package:ortho_waiting_list/models/operation_expanded.dart';
@@ -69,6 +70,15 @@ class PxOperations extends ChangeNotifier {
     await init();
   }
 
+  Future<void> deletescheduleForOperation(
+    OperationExpanded operation,
+  ) async {
+    await api.deleteScheduleForOperation(
+      operation: operation,
+    );
+    await init();
+  }
+
   Future<void> scheduleOperation(
     String operation_id,
     DateTime operativeDate,
@@ -128,12 +138,24 @@ class PxOperations extends ChangeNotifier {
   }
 
   Future<void> addImageToOperation({
-    required String operationId,
-    required String imagePublicId,
+    required OperationExpanded operationExpanded,
+    required CaseImage caseImage,
   }) async {
     await api.addImageToOperation(
-      operationId: operationId,
-      imagePublicId: imagePublicId,
+      operationExpanded: operationExpanded,
+      caseImage: caseImage,
+    );
+
+    await init();
+  }
+
+  Future<void> removeImageFromOperation({
+    required OperationExpanded operationExpanded,
+    required CaseImage caseImage,
+  }) async {
+    await api.removeImageFromOperation(
+      operationExpanded: operationExpanded,
+      caseImage: caseImage,
     );
 
     await init();

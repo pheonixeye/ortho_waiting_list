@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:ortho_waiting_list/models/case_image.dart';
 import 'package:ortho_waiting_list/models/rank.dart';
 import 'package:ortho_waiting_list/models/speciality.dart';
 import 'package:pocketbase/pocketbase.dart';
@@ -19,7 +20,7 @@ class OperationExpanded extends Equatable {
   final Doctor consultant;
   final num postponed;
   final Speciality subspeciality;
-  final List<String> case_images_urls;
+  final List<CaseImage> images_ids;
 
   const OperationExpanded({
     required this.id,
@@ -34,7 +35,7 @@ class OperationExpanded extends Equatable {
     required this.consultant,
     required this.postponed,
     required this.subspeciality,
-    required this.case_images_urls,
+    required this.images_ids,
   });
 
   OperationExpanded copyWith({
@@ -50,7 +51,7 @@ class OperationExpanded extends Equatable {
     Doctor? consultant,
     num? postponed,
     Speciality? subspeciality,
-    List<String>? case_images_urls,
+    List<CaseImage>? images_ids,
   }) {
     return OperationExpanded(
       id: id ?? this.id,
@@ -65,7 +66,7 @@ class OperationExpanded extends Equatable {
       consultant: consultant ?? this.consultant,
       postponed: postponed ?? this.postponed,
       subspeciality: subspeciality ?? this.subspeciality,
-      case_images_urls: case_images_urls ?? this.case_images_urls,
+      images_ids: images_ids ?? this.images_ids,
     );
   }
 
@@ -83,7 +84,7 @@ class OperationExpanded extends Equatable {
       'consultant': consultant.toJson(),
       'postponed': postponed,
       'subspeciality': subspeciality.toJson(),
-      'case_images_urls': case_images_urls.map((e) => e.toString()).toList(),
+      'images_ids': images_ids.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -104,7 +105,7 @@ class OperationExpanded extends Equatable {
       added_by,
       consultant,
       postponed,
-      case_images_urls,
+      images_ids,
     ];
   }
 
@@ -126,7 +127,10 @@ class OperationExpanded extends Equatable {
       postponed: record.getDoubleValue('postponed'),
       subspeciality: Speciality.fromJson(
           record.get<RecordModel>('expand.subspeciality').toJson()),
-      case_images_urls: record.getListValue<String>('case_images_urls'),
+      images_ids: record
+          .getListValue<RecordModel>('expand.images_ids')
+          .map((e) => CaseImage.fromJson(e.toJson()))
+          .toList(),
     );
   }
 }

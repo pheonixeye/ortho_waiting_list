@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ortho_waiting_list/api/rank_api/rank_api.dart';
 import 'package:ortho_waiting_list/api/specialities_api/spec_api.dart';
+import 'package:ortho_waiting_list/components/prompt_dialog.dart';
+import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/images_control_row.dart';
 import 'package:provider/provider.dart';
 import 'package:ortho_waiting_list/api/doctors/doctors_api.dart';
 import 'package:ortho_waiting_list/functions/shell_function.dart';
@@ -67,12 +69,11 @@ class OperationExpansionTile extends StatelessWidget {
                   children: [
                     Text(operation.phone),
                     const Spacer(),
-                    InkWell(
-                      onTap: () {
+                    IconButton.outlined(
+                      onPressed: () {
                         web.window.open('tel:+2${operation.phone}', '_blank');
                       },
-                      radius: 36,
-                      child: const Icon(Icons.phone),
+                      icon: const Icon(Icons.phone),
                     ),
                   ],
                 ),
@@ -215,9 +216,36 @@ class OperationExpansionTile extends StatelessWidget {
                       child: const Icon(Icons.calendar_month),
                     ),
                     const SizedBox(width: 10),
+                    FloatingActionButton.small(
+                      tooltip: 'الغاء الموعد',
+                      onPressed: () async {
+                        final _toDeleteDate = await showDialog<bool?>(
+                          context: context,
+                          builder: (context) {
+                            return const PromptDialog(
+                              message: 'برجاء تاكيد الغاء الموعد ؟',
+                            );
+                          },
+                        );
+                        if (_toDeleteDate == null || _toDeleteDate == false) {
+                          return;
+                        }
+                        if (context.mounted) {
+                          await shellFunction(
+                            context,
+                            toExecute: () async {
+                              await o.deletescheduleForOperation(operation);
+                            },
+                          );
+                        }
+                      },
+                      child: const Icon(Icons.event_busy),
+                    ),
+                    const SizedBox(width: 10),
                   ],
                 ),
               ),
+              ImagesControlRow(operationExpanded: operation),
             ],
           ),
         );

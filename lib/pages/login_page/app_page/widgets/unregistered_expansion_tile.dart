@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:ortho_waiting_list/api/images_api/images_api.dart';
 import 'package:ortho_waiting_list/extensions/number_translator.dart';
 import 'package:ortho_waiting_list/functions/shell_function.dart';
 import 'package:ortho_waiting_list/models/operation_expanded.dart';
-import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/image_source_selector_dialog.dart';
+import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/images_control_row.dart';
 import 'package:ortho_waiting_list/providers/px_operations.dart';
 import 'package:provider/provider.dart';
 import 'package:web/web.dart' as w;
-import 'package:universal_io/universal_io.dart' as io;
 
 class UnregisteredExpansionTile extends StatelessWidget {
   const UnregisteredExpansionTile({
@@ -118,81 +115,7 @@ class UnregisteredExpansionTile extends StatelessWidget {
             ],
           ),
           children: [
-            ListTile(
-              title: Row(
-                children: [
-                  const Text('صور الاشاعات'),
-                  const Spacer(),
-                  FloatingActionButton.small(
-                    heroTag: UniqueKey(),
-                    onPressed: () async {
-                      //TODO: add images
-                      final _picker = ImagePicker();
-                      final _pxO = context.read<PxOperations>();
-
-                      final _imageSource = await showDialog<ImageSource?>(
-                        context: context,
-                        builder: (context) {
-                          return ImageSourceSelectorDialog();
-                        },
-                      );
-                      if (_imageSource == null) {
-                        //TODO: show no image source selected
-                        return;
-                      }
-
-                      final _file = await _picker.pickImage(
-                        source: _imageSource,
-                      );
-
-                      if (_file == null) {
-                        //TODO: show no file is picked
-                        return;
-                      }
-
-                      final _imagePublicId =
-                          await ImagesApi.instance.uploadImage(_file.path);
-
-                      if (_imagePublicId == null) {
-                        //TODO: show error
-                        return;
-                      }
-                      if (context.mounted) {
-                        await shellFunction(
-                          context,
-                          toExecute: () async {
-                            await _pxO.addImageToOperation(
-                              operationId: unregistered.id,
-                              imagePublicId: _imagePublicId,
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: const Icon(Icons.add),
-                  ),
-                  const SizedBox(width: 10),
-                ],
-              ),
-              subtitle: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    //TODO: view images
-                    ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map((i) {
-                      return SizedBox(
-                        width: 250,
-                        height: 350,
-                        child: Card.outlined(
-                          elevation: 6,
-                          color: Colors.brown.shade200,
-                        ),
-                      );
-                    })
-                  ],
-                ),
-              ),
-            ),
+            ImagesControlRow(operationExpanded: unregistered),
             const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

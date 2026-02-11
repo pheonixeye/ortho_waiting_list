@@ -13,7 +13,7 @@ class OperationDTO extends Equatable {
   final String subspeciality;
   final String consultant;
   final num postponed;
-  final List<String> case_images_urls;
+  final List<String> images_ids;
 
   const OperationDTO({
     required this.id,
@@ -28,7 +28,7 @@ class OperationDTO extends Equatable {
     required this.subspeciality,
     required this.consultant,
     required this.postponed,
-    required this.case_images_urls,
+    required this.images_ids,
   });
 
   OperationDTO copyWith({
@@ -59,7 +59,7 @@ class OperationDTO extends Equatable {
       subspeciality: subspeciality ?? this.subspeciality,
       consultant: consultant ?? this.consultant,
       postponed: postponed ?? this.postponed,
-      case_images_urls: case_images_urls ?? this.case_images_urls,
+      images_ids: case_images_urls ?? this.images_ids,
     );
   }
 
@@ -77,7 +77,7 @@ class OperationDTO extends Equatable {
       'subspeciality': subspeciality,
       'consultant': consultant,
       'postponed': postponed,
-      'case_images_urls': case_images_urls,
+      'images_ids': images_ids,
     };
   }
 
@@ -99,7 +99,7 @@ class OperationDTO extends Equatable {
       subspeciality,
       consultant,
       postponed,
-      case_images_urls,
+      images_ids,
     ];
   }
 }

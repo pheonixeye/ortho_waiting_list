@@ -362,7 +362,7 @@ class _CreateNewOperationDtoDialogState
                       postponed: 0,
                       operative_date:
                           widget.operative_date?.toIso8601String() ?? '',
-                      case_images_urls: const [],
+                      images_ids: const [],
                     );
                     Navigator.pop(context, data);
                   }
