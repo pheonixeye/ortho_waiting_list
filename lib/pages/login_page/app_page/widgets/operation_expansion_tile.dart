@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ortho_waiting_list/api/rank_api/rank_api.dart';
 import 'package:ortho_waiting_list/api/specialities_api/spec_api.dart';
 import 'package:ortho_waiting_list/components/prompt_dialog.dart';
+import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/edit_basic_info_dialog.dart';
 import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/images_control_row.dart';
 import 'package:provider/provider.dart';
 import 'package:ortho_waiting_list/api/doctors/doctors_api.dart';
@@ -43,6 +44,7 @@ class OperationExpansionTile extends StatelessWidget {
                 t.isDark ? Colors.green.shade900 : Colors.green.shade400,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -64,17 +66,56 @@ class OperationExpansionTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                Text(operation.name),
+                Row(
+                  children: [
+                    Text(operation.name),
+                    const Spacer(),
+                    FloatingActionButton.small(
+                      tooltip: 'تعديل البيانات',
+                      heroTag: UniqueKey(),
+                      onPressed: () async {
+                        //todo
+                        final _updatedOperation =
+                            await showDialog<OperationExpanded?>(
+                          context: context,
+                          builder: (context) {
+                            return EditBasicInfoDialog(
+                              operationExpanded: operation,
+                            );
+                          },
+                        );
+                        if (_updatedOperation == null) {
+                          return;
+                        }
+
+                        if (context.mounted) {
+                          await shellFunction(
+                            context,
+                            toExecute: () async {
+                              await o
+                                  .updateBasicOperationInfo(_updatedOperation);
+                            },
+                          );
+                        }
+                      },
+                      child: const Icon(Icons.edit),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
                 Row(
                   children: [
                     Text(operation.phone),
                     const Spacer(),
-                    IconButton.outlined(
+                    FloatingActionButton.small(
+                      tooltip: 'اتصال',
+                      heroTag: UniqueKey(),
                       onPressed: () {
                         web.window.open('tel:+2${operation.phone}', '_blank');
                       },
-                      icon: const Icon(Icons.phone),
+                      child: const Icon(Icons.phone),
                     ),
+                    const SizedBox(width: 10),
                   ],
                 ),
                 Text(operation.diagnosis),

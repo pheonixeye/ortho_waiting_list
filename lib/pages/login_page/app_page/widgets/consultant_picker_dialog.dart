@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ortho_waiting_list/extensions/is_mobile.dart';
 import 'package:provider/provider.dart';
 import 'package:ortho_waiting_list/components/central_error.dart';
 import 'package:ortho_waiting_list/components/central_loading.dart';
@@ -45,7 +46,9 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
             ],
           ),
           content: SizedBox(
-            width: MediaQuery.sizeOf(context).width,
+            width: context.isMobile
+                ? MediaQuery.sizeOf(context).width - 50
+                : MediaQuery.sizeOf(context).width / 2,
             height: MediaQuery.sizeOf(context).height,
             child: ListView(
               cacheExtent: 3000,

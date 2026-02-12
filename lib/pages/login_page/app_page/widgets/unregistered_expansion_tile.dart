@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ortho_waiting_list/extensions/number_translator.dart';
 import 'package:ortho_waiting_list/functions/shell_function.dart';
 import 'package:ortho_waiting_list/models/operation_expanded.dart';
+import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/edit_basic_info_dialog.dart';
 import 'package:ortho_waiting_list/pages/login_page/app_page/widgets/images_control_row.dart';
 import 'package:ortho_waiting_list/providers/px_operations.dart';
 import 'package:provider/provider.dart';
@@ -45,13 +46,46 @@ class UnregisteredExpansionTile extends StatelessWidget {
                 child: Text(unregistered.name),
               ),
               const Spacer(),
-              IconButton.outlined(
+              FloatingActionButton.small(
+                tooltip: 'اتصال',
+                heroTag: UniqueKey(),
                 onPressed: () {
                   w.window.open('tel://+2${unregistered.phone}', '_blank');
                 },
-                icon: const Icon(Icons.phone),
+                child: const Icon(Icons.phone),
               ),
-              const SizedBox(width: 10)
+              const SizedBox(width: 10),
+              FloatingActionButton.small(
+                tooltip: 'تعديل البيانات',
+                heroTag: UniqueKey(),
+                onPressed: () async {
+                  //todo
+                  final o = context.read<PxOperations>();
+                  final _updatedOperation =
+                      await showDialog<OperationExpanded?>(
+                    context: context,
+                    builder: (context) {
+                      return EditBasicInfoDialog(
+                        operationExpanded: unregistered,
+                      );
+                    },
+                  );
+                  if (_updatedOperation == null) {
+                    return;
+                  }
+
+                  if (context.mounted) {
+                    await shellFunction(
+                      context,
+                      toExecute: () async {
+                        await o.updateBasicOperationInfo(_updatedOperation);
+                      },
+                    );
+                  }
+                },
+                child: const Icon(Icons.edit),
+              ),
+              const SizedBox(width: 10),
             ],
           ),
           subtitle: Column(

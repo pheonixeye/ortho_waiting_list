@@ -59,6 +59,11 @@ class PxOperations extends ChangeNotifier {
     await init();
   }
 
+  Future<void> updateBasicOperationInfo(OperationExpanded operation) async {
+    await api.updateBasicOperationInfo(operation: operation);
+    await init();
+  }
+
   Future<void> rescheduleOperation(
     OperationExpanded operation,
     DateTime operativeDate,

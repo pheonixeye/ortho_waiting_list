@@ -155,6 +155,22 @@ class WaitingListApi {
     );
   }
 
+  Future<void> updateBasicOperationInfo({
+    required OperationExpanded operation,
+  }) async {
+    await PocketbaseHelper.pb.collection(_collection).update(
+      operation.id,
+      body: {
+        'name': operation.name,
+        'phone': operation.phone,
+        'diagnosis': operation.diagnosis,
+        'operation': operation.operation,
+        'subspeciality': operation.subspeciality.id,
+        'rank': operation.rank.id,
+      },
+    );
+  }
+
   Future<void> addImageToOperation({
     required OperationExpanded operationExpanded,
     required CaseImage caseImage,

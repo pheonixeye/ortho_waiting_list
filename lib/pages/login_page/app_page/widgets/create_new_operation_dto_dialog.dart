@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ortho_waiting_list/extensions/is_mobile.dart';
 import 'package:ortho_waiting_list/models/rank.dart';
 import 'package:ortho_waiting_list/models/speciality.dart';
 import 'package:provider/provider.dart';
@@ -101,7 +102,9 @@ class _CreateNewOperationDtoDialogState
           ),
           scrollable: true,
           content: SizedBox(
-            width: MediaQuery.sizeOf(context).width,
+            width: context.isMobile
+                ? MediaQuery.sizeOf(context).width - 50
+                : MediaQuery.sizeOf(context).width / 2,
             height: MediaQuery.sizeOf(context).height,
             child: Form(
               key: formKey,
