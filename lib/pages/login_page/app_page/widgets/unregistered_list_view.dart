@@ -57,162 +57,167 @@ class UnregisteredListView extends StatelessWidget {
               toExecute: o.init,
             );
           }
-          // final _unregistered =
-          //     (o.unregistered as ApiDataResult<List<OperationExpanded>>).data;
           return Column(
             spacing: 8,
             children: [
               Card.outlined(
                 elevation: 6,
-                color: Colors.green,
+                color: Colors.green.shade900,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
+                  child: ExpansionTile(
                     title: const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text('فلترة'),
                     ),
-                    subtitle: Consumer<PxConstants>(
-                      builder: (context, c, _) {
-                        while (c.doctors == null ||
-                            c.specs == null ||
-                            c.ranks == null) {
-                          return const SizedBox(
-                            height: 10,
-                            child: LinearProgressIndicator(),
-                          );
-                        }
-                        final _doctors =
-                            (c.doctors as ApiDataResult<List<Doctor>>).data;
-                        final _ranks =
-                            (c.ranks as ApiDataResult<List<Rank>>).data;
-                        final _specs =
-                            (c.specs as ApiDataResult<List<Speciality>>).data;
-                        return Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              spacing: 8,
-                              children: [
-                                ...UnregFilter.values.map((e) {
-                                  return FilterChip(
-                                    label: Text(e.ar),
-                                    selected: o.filterType == e,
-                                    selectedColor: Colors.amber,
-                                    onSelected: (val) {
-                                      o.selectFilter(e);
-                                    },
-                                  );
-                                })
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            switch (o.filterType) {
-                              UnregFilter.all => const SizedBox(),
-                              UnregFilter.rank => ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxHeight: 100,
-                                  ),
-                                  child: DropdownButtonFormField<Rank>(
-                                    hint: const Text(
-                                      'اختر الرتبة',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    isExpanded: true,
-                                    alignment: Alignment.center,
-                                    initialValue: o.rankFilter,
-                                    items: [
-                                      ..._ranks.map((r) {
-                                        return DropdownMenuItem<Rank>(
-                                          value: r,
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            r.rank,
-                                          ),
-                                        );
-                                      }),
-                                    ],
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        o.filterUnregBy(value.id);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              UnregFilter.spec => ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxHeight: 100,
-                                  ),
-                                  child: DropdownButtonFormField<Speciality>(
-                                    isExpanded: true,
-                                    alignment: Alignment.center,
-                                    hint: const Text(
-                                      'اختر نوع الحجز',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    initialValue: o.specFilter,
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    items: [
-                                      ..._specs.map((s) {
-                                        return DropdownMenuItem<Speciality>(
-                                          value: s,
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            s.name,
-                                          ),
-                                        );
-                                      }),
-                                    ],
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        o.filterUnregBy(value.id);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              UnregFilter.doctor => ConstrainedBox(
-                                  constraints:
-                                      const BoxConstraints(maxHeight: 100),
-                                  child: DropdownButtonFormField<Doctor>(
-                                    hint: const Text(
-                                      'اختر الاستشاري',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    alignment: Alignment.center,
-                                    isExpanded: true,
-                                    items: [
-                                      ..._doctors.map((doc) {
-                                        return DropdownMenuItem<Doctor>(
-                                          value: doc,
-                                          alignment: Alignment.center,
-                                          child: Text(doc.name),
-                                        );
-                                      })
-                                    ],
-                                    initialValue: o.docFilter,
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        o.filterUnregBy(value.id);
-                                      }
-                                    },
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'اختر الاستشاري',
-                                    ),
-                                  ),
-                                ),
+                    children: [
+                      Consumer<PxConstants>(
+                        builder: (context, c, _) {
+                          while (c.doctors == null ||
+                              c.specs == null ||
+                              c.ranks == null) {
+                            return const SizedBox(
+                              height: 10,
+                              child: LinearProgressIndicator(),
+                            );
+                          }
+                          final _doctors =
+                              (c.doctors as ApiDataResult<List<Doctor>>).data;
+                          final _ranks =
+                              (c.ranks as ApiDataResult<List<Rank>>).data;
+                          final _specs =
+                              (c.specs as ApiDataResult<List<Speciality>>).data;
+
+                          void _onChanged<T>(dynamic value) async {
+                            if (value != null) {
+                              await shellFunction(
+                                context,
+                                toExecute: () {
+                                  o.filterUnregBy(value.id);
+                                },
+                              );
                             }
-                          ],
-                        );
-                      },
-                    ),
+                          }
+
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                spacing: 8,
+                                children: [
+                                  ...UnregFilter.values.map((e) {
+                                    return FilterChip(
+                                      label: Text(e.ar),
+                                      selected: o.filterType == e,
+                                      selectedColor: Colors.amber,
+                                      onSelected: (val) async {
+                                        await shellFunction(
+                                          context,
+                                          toExecute: () {
+                                            o.selectFilter(e);
+                                          },
+                                        );
+                                      },
+                                    );
+                                  })
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              switch (o.filterType) {
+                                UnregFilter.all => const SizedBox(),
+                                UnregFilter.rank => ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      maxHeight: 100,
+                                    ),
+                                    child: DropdownButtonFormField<Rank>(
+                                      hint: const Text(
+                                        'اختر الرتبة',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      isExpanded: true,
+                                      alignment: Alignment.center,
+                                      initialValue: o.rankFilter,
+                                      items: [
+                                        ..._ranks.map((r) {
+                                          return DropdownMenuItem<Rank>(
+                                            value: r,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              r.rank,
+                                            ),
+                                          );
+                                        }),
+                                      ],
+                                      onChanged: _onChanged,
+                                    ),
+                                  ),
+                                UnregFilter.spec => ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      maxHeight: 100,
+                                    ),
+                                    child: DropdownButtonFormField<Speciality>(
+                                      isExpanded: true,
+                                      alignment: Alignment.center,
+                                      hint: const Text(
+                                        'اختر نوع الحجز',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      initialValue: o.specFilter,
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      items: [
+                                        ..._specs.map((s) {
+                                          return DropdownMenuItem<Speciality>(
+                                            value: s,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              s.name,
+                                            ),
+                                          );
+                                        }),
+                                      ],
+                                      onChanged: _onChanged,
+                                    ),
+                                  ),
+                                UnregFilter.doctor => ConstrainedBox(
+                                    constraints:
+                                        const BoxConstraints(maxHeight: 100),
+                                    child: DropdownButtonFormField<Doctor>(
+                                      hint: const Text(
+                                        'اختر الاستشاري',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      alignment: Alignment.center,
+                                      isExpanded: true,
+                                      items: [
+                                        ..._doctors.map((doc) {
+                                          return DropdownMenuItem<Doctor>(
+                                            value: doc,
+                                            alignment: Alignment.center,
+                                            child: Text(doc.name),
+                                          );
+                                        })
+                                      ],
+                                      initialValue: o.docFilter,
+                                      onChanged: _onChanged,
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'اختر الاستشاري',
+                                      ),
+                                    ),
+                                  ),
+                              }
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),

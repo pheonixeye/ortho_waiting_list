@@ -31,8 +31,6 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
         }
         final _doctors = (d.doctors as ApiDataResult<List<Doctor>>).data;
         return AlertDialog(
-          contentPadding: const EdgeInsets.all(2),
-          insetPadding: const EdgeInsets.all(2),
           title: Row(
             children: [
               const Text('اختر الاستشاري'),
@@ -45,37 +43,52 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
               ),
             ],
           ),
+          contentPadding: const EdgeInsets.all(2),
+          insetPadding: const EdgeInsets.all(2),
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(12),
+          ),
+          shadowColor: Colors.amber.shade50,
           content: SizedBox(
             width: context.isMobile
                 ? MediaQuery.sizeOf(context).width - 50
                 : MediaQuery.sizeOf(context).width / 2,
-            height: MediaQuery.sizeOf(context).height,
-            child: ListView(
-              cacheExtent: 3000,
-              children: [
-                ..._doctors.map((doc) {
-                  return Card.outlined(
-                    elevation: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RadioListTile(
-                        title: Text(doc.name),
-                        value: doc,
-                        groupValue: _doc,
-                        onChanged: (value) {
-                          if (value == null) {
-                            return;
-                          }
-                          setState(() {
-                            _doc = value;
-                          });
-                          Navigator.pop(context, _doc);
-                        },
-                      ),
+            child: RadioGroup(
+              groupValue: _doc,
+              onChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+                setState(() {
+                  _doc = value;
+                });
+                Navigator.pop(context, _doc);
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      cacheExtent: 3000,
+                      children: [
+                        ..._doctors.map((doc) {
+                          return Card.outlined(
+                            elevation: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RadioListTile(
+                                title: Text(doc.name),
+                                value: doc,
+                              ),
+                            ),
+                          );
+                        })
+                      ],
                     ),
-                  );
-                })
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

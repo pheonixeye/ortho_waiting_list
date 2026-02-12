@@ -32,16 +32,15 @@ class OperationExpansionTile extends StatelessWidget {
         return Card.outlined(
           elevation: 4,
           child: ExpansionTile(
+            showTrailingIcon: false,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadiusGeometry.circular(12),
             ),
             collapsedShape: RoundedRectangleBorder(
               borderRadius: BorderRadiusGeometry.circular(12),
             ),
-            backgroundColor:
-                t.isDark ? Colors.amber.shade900 : Colors.amber.shade400,
-            collapsedBackgroundColor:
-                t.isDark ? Colors.green.shade900 : Colors.green.shade400,
+            backgroundColor: Colors.deepOrange.shade900,
+            collapsedBackgroundColor: Colors.green.shade900,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,

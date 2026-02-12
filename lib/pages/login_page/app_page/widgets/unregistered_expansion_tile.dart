@@ -23,8 +23,9 @@ class UnregisteredExpansionTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ExpansionTile(
-          backgroundColor: Colors.amber.shade300,
-          collapsedBackgroundColor: Colors.blue.shade300,
+          backgroundColor: Colors.deepOrange.shade900,
+          collapsedBackgroundColor: Colors.blue.shade900,
+          showTrailingIcon: false,
           title: Row(
             children: [
               FloatingActionButton.small(
@@ -32,6 +33,7 @@ class UnregisteredExpansionTile extends StatelessWidget {
                 heroTag: UniqueKey(),
                 child: Text('${index + 1}'.toArabicNumber()),
               ),
+              const SizedBox(width: 10),
               Card.outlined(
                 elevation: 6,
                 child: Padding(
@@ -41,55 +43,70 @@ class UnregisteredExpansionTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(unregistered.name),
-              ),
               const Spacer(),
-              FloatingActionButton.small(
-                tooltip: 'اتصال',
-                heroTag: UniqueKey(),
-                onPressed: () {
-                  w.window.open('tel://+2${unregistered.phone}', '_blank');
-                },
-                child: const Icon(Icons.phone),
-              ),
-              const SizedBox(width: 10),
-              FloatingActionButton.small(
-                tooltip: 'تعديل البيانات',
-                heroTag: UniqueKey(),
-                onPressed: () async {
-                  //todo
-                  final o = context.read<PxOperations>();
-                  final _updatedOperation =
-                      await showDialog<OperationExpanded?>(
-                    context: context,
-                    builder: (context) {
-                      return EditBasicInfoDialog(
-                        operationExpanded: unregistered,
-                      );
-                    },
-                  );
-                  if (_updatedOperation == null) {
-                    return;
-                  }
-
-                  if (context.mounted) {
-                    await shellFunction(
-                      context,
-                      toExecute: () async {
-                        await o.updateBasicOperationInfo(_updatedOperation);
-                      },
-                    );
-                  }
-                },
-                child: const Icon(Icons.edit),
-              ),
-              const SizedBox(width: 10),
             ],
           ),
           subtitle: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 50),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text.rich(
+                      TextSpan(
+                        text: unregistered.name,
+                        children: [
+                          const TextSpan(text: '\n'),
+                          TextSpan(text: '(${unregistered.phone})'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  FloatingActionButton.small(
+                    tooltip: 'اتصال',
+                    heroTag: UniqueKey(),
+                    onPressed: () {
+                      w.window.open('tel://+2${unregistered.phone}', '_blank');
+                    },
+                    child: const Icon(Icons.phone),
+                  ),
+                  const SizedBox(width: 10),
+                  FloatingActionButton.small(
+                    tooltip: 'تعديل البيانات',
+                    heroTag: UniqueKey(),
+                    onPressed: () async {
+                      //todo
+                      final o = context.read<PxOperations>();
+                      final _updatedOperation =
+                          await showDialog<OperationExpanded?>(
+                        context: context,
+                        builder: (context) {
+                          return EditBasicInfoDialog(
+                            operationExpanded: unregistered,
+                          );
+                        },
+                      );
+                      if (_updatedOperation == null) {
+                        return;
+                      }
+
+                      if (context.mounted) {
+                        await shellFunction(
+                          context,
+                          toExecute: () async {
+                            await o.updateBasicOperationInfo(_updatedOperation);
+                          },
+                        );
+                      }
+                    },
+                    child: const Icon(Icons.edit),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(

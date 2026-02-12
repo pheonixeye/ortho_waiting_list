@@ -82,6 +82,11 @@ class _CreateNewOperationDtoDialogState
         return AlertDialog(
           contentPadding: const EdgeInsets.all(2),
           insetPadding: const EdgeInsets.all(2),
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadiusGeometry.circular(12),
+          ),
+          shadowColor: Colors.amber.shade50,
           title: Row(
             children: [
               if (widget.operative_date == null)
@@ -100,245 +105,256 @@ class _CreateNewOperationDtoDialogState
               ),
             ],
           ),
-          scrollable: true,
           content: SizedBox(
             width: context.isMobile
                 ? MediaQuery.sizeOf(context).width - 50
                 : MediaQuery.sizeOf(context).width / 2,
-            height: MediaQuery.sizeOf(context).height,
             child: Form(
               key: formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'نوع الحجز',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxHeight: 100,
-                      ),
-                      child: DropdownButtonFormField<Speciality>(
-                        isExpanded: true,
-                        alignment: Alignment.center,
-                        hint: const Text(
-                          'اختر نوع الحجز',
-                          textAlign: TextAlign.center,
+                  Expanded(
+                    child: ListView(
+                      cacheExtent: 3000,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'نوع الحجز',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
-                        initialValue: _spec,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        items: [
-                          ..._specs.map((s) {
-                            return DropdownMenuItem<Speciality>(
-                              value: s,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxHeight: 100,
+                            ),
+                            child: DropdownButtonFormField<Speciality>(
+                              isExpanded: true,
                               alignment: Alignment.center,
-                              child: Text(
-                                s.name,
+                              hint: const Text(
+                                'اختر نوع الحجز',
+                                textAlign: TextAlign.center,
                               ),
-                            );
-                          }),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _spec = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'الاسم',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _patientNameController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'رباعي بالعربي بدون همزات او تاء مربوطة',
-                      ),
-                      validator: _emptyFieldValidator,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'الرتبة',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxHeight: 100,
-                      ),
-                      child: DropdownButtonFormField<Rank>(
-                        hint: const Text(
-                          'اختر الرتبة',
-                          textAlign: TextAlign.center,
+                              initialValue: _spec,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              items: [
+                                ..._specs.map((s) {
+                                  return DropdownMenuItem<Speciality>(
+                                    value: s,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      s.name,
+                                    ),
+                                  );
+                                }),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _spec = value;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
                         ),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'الاسم',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
-                        isExpanded: true,
-                        alignment: Alignment.center,
-                        initialValue: _rank,
-                        items: [
-                          ..._ranks.map((r) {
-                            return DropdownMenuItem<Rank>(
-                              value: r,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            controller: _patientNameController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText:
+                                  'رباعي بالعربي بدون همزات او تاء مربوطة',
+                            ),
+                            validator: _emptyFieldValidator,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'الرتبة',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxHeight: 100,
+                            ),
+                            child: DropdownButtonFormField<Rank>(
+                              hint: const Text(
+                                'اختر الرتبة',
+                                textAlign: TextAlign.center,
+                              ),
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              isExpanded: true,
                               alignment: Alignment.center,
-                              child: Text(
-                                r.rank,
-                              ),
-                            );
-                          }),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _rank = value;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'رقم الموبايل',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _patientPhoneController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'احد عشر رقم',
-                      ),
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            value.length != 11) {
-                          return 'برجاء ادخال رقم صحيح';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'التشخيص',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _patientDiagnosisController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'ادخل التشخيص',
-                      ),
-                      validator: _emptyFieldValidator,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'العملية',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: _patientOperationController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'ادخل قرار الاستشاري',
-                      ),
-                      validator: _emptyFieldValidator,
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'الاستشاري',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DropdownButtonFormField<String>(
-                      hint: const Text(
-                        'اختر الاستشاري',
-                        textAlign: TextAlign.center,
-                      ),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      alignment: Alignment.center,
-                      isExpanded: true,
-                      items: [
-                        ..._doctors.map((doc) {
-                          return DropdownMenuItem<String>(
-                            value: doc.id,
+                              initialValue: _rank,
+                              items: [
+                                ..._ranks.map((r) {
+                                  return DropdownMenuItem<Rank>(
+                                    value: r,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      r.rank,
+                                    ),
+                                  );
+                                }),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _rank = value;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'رقم الموبايل',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            controller: _patientPhoneController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'احد عشر رقم',
+                            ),
+                            validator: (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.length != 11) {
+                                return 'برجاء ادخال رقم صحيح';
+                              }
+                              return null;
+                            },
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'التشخيص',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            controller: _patientDiagnosisController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'ادخل التشخيص',
+                            ),
+                            validator: _emptyFieldValidator,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'العملية',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            controller: _patientOperationController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'ادخل قرار الاستشاري',
+                            ),
+                            validator: _emptyFieldValidator,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'الاستشاري',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField<String>(
+                            hint: const Text(
+                              'اختر الاستشاري',
+                              textAlign: TextAlign.center,
+                            ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             alignment: Alignment.center,
-                            child: Text(doc.name),
-                          );
-                        })
+                            isExpanded: true,
+                            items: [
+                              ..._doctors.map((doc) {
+                                return DropdownMenuItem<String>(
+                                  value: doc.id,
+                                  alignment: Alignment.center,
+                                  child: Text(doc.name),
+                                );
+                              })
+                            ],
+                            initialValue: _consultant_id,
+                            onChanged: (value) {
+                              setState(() {
+                                _consultant_id = value;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'اختر الاستشاري',
+                            ),
+                            validator: _emptyFieldValidator,
+                          ),
+                        ),
                       ],
-                      initialValue: _consultant_id,
-                      onChanged: (value) {
-                        setState(() {
-                          _consultant_id = value;
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'اختر الاستشاري',
-                      ),
-                      validator: _emptyFieldValidator,
                     ),
                   ),
                 ],

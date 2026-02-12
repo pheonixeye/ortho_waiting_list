@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ortho_waiting_list/components/central_error.dart';
+import 'package:ortho_waiting_list/extensions/is_mobile.dart';
 import 'package:ortho_waiting_list/models/_api_result.dart';
 import 'package:ortho_waiting_list/models/operation_expanded.dart';
 import 'package:ortho_waiting_list/models/rank.dart';
@@ -59,8 +60,6 @@ class _EditBasicInfoDialogState extends State<EditBasicInfoDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      contentPadding: const EdgeInsets.all(2),
-      insetPadding: const EdgeInsets.all(2),
       title: Row(
         children: [
           const Text('تعديل البيانات الاساسية'),
@@ -73,167 +72,189 @@ class _EditBasicInfoDialogState extends State<EditBasicInfoDialog> {
           ),
         ],
       ),
-      content: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'الاسم',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _patientNameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'رباعي بالعربي بدون همزات او تاء مربوطة',
-                ),
-                validator: _emptyFieldValidator,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'الرتبة',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Consumer<PxConstants>(
-              builder: (context, c, _) {
-                while (c.ranks == null) {
-                  return const LinearProgressIndicator();
-                }
-                while (c.ranks is ApiErrorResult) {
-                  return CentralError(
-                    error: (c.ranks as ApiErrorResult).originalErrorMessage,
-                    toExecute: c.init,
-                  );
-                }
-                final _ranks = (c.ranks as ApiDataResult<List<Rank>>).data;
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxHeight: 100,
+      contentPadding: const EdgeInsets.all(2),
+      insetPadding: const EdgeInsets.all(2),
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(12),
+      ),
+      shadowColor: Colors.amber.shade50,
+      content: SizedBox(
+        width: context.isMobile
+            ? MediaQuery.sizeOf(context).width - 50
+            : MediaQuery.sizeOf(context).width / 2,
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: ListView(
+                  cacheExtent: 3000,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'الاسم',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                    child: DropdownButtonFormField<Rank>(
-                      hint: const Text(
-                        'اختر الرتبة',
-                        textAlign: TextAlign.center,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _patientNameController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'رباعي بالعربي بدون همزات او تاء مربوطة',
+                        ),
+                        validator: _emptyFieldValidator,
                       ),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'الرتبة',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                      isExpanded: true,
-                      alignment: Alignment.center,
-                      initialValue: _rank,
-                      items: [
-                        ..._ranks.map((r) {
-                          return DropdownMenuItem<Rank>(
-                            value: r,
-                            alignment: Alignment.center,
-                            child: Text(
-                              r.rank,
-                            ),
-                          );
-                        }),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _rank = value;
-                          });
+                    ),
+                    Consumer<PxConstants>(
+                      builder: (context, c, _) {
+                        while (c.ranks == null) {
+                          return const LinearProgressIndicator();
                         }
+                        while (c.ranks is ApiErrorResult) {
+                          return CentralError(
+                            error: (c.ranks as ApiErrorResult)
+                                .originalErrorMessage,
+                            toExecute: c.init,
+                          );
+                        }
+                        final _ranks =
+                            (c.ranks as ApiDataResult<List<Rank>>).data;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxHeight: 100,
+                            ),
+                            child: DropdownButtonFormField<Rank>(
+                              hint: const Text(
+                                'اختر الرتبة',
+                                textAlign: TextAlign.center,
+                              ),
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                              ),
+                              isExpanded: true,
+                              alignment: Alignment.center,
+                              initialValue: _rank,
+                              items: [
+                                ..._ranks.map((r) {
+                                  return DropdownMenuItem<Rank>(
+                                    value: r,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      r.rank,
+                                    ),
+                                  );
+                                }),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _rank = value;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        );
                       },
                     ),
-                  ),
-                );
-              },
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'رقم الموبايل',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'رقم الموبايل',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _patientPhoneController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'احد عشر رقم',
+                        ),
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              value.length != 11) {
+                            return 'برجاء ادخال رقم صحيح';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'التشخيص',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _patientDiagnosisController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'ادخل التشخيص',
+                        ),
+                        validator: _emptyFieldValidator,
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'العملية',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        controller: _patientOperationController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'ادخل قرار الاستشاري',
+                        ),
+                        validator: _emptyFieldValidator,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _patientPhoneController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'احد عشر رقم',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty || value.length != 11) {
-                    return 'برجاء ادخال رقم صحيح';
-                  }
-                  return null;
-                },
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'التشخيص',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _patientDiagnosisController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'ادخل التشخيص',
-                ),
-                validator: _emptyFieldValidator,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'العملية',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _patientOperationController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'ادخل قرار الاستشاري',
-                ),
-                validator: _emptyFieldValidator,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [
