@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ortho_waiting_list/components/sm_btn.dart';
 import 'package:ortho_waiting_list/extensions/is_mobile.dart';
 import 'package:ortho_waiting_list/models/rank.dart';
 import 'package:ortho_waiting_list/models/speciality.dart';
@@ -120,11 +121,17 @@ class _CreateNewOperationDtoDialogState
                       children: [
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'نوع الحجز',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'نوع الحجز',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -167,11 +174,17 @@ class _CreateNewOperationDtoDialogState
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'الاسم',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'الاسم',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -190,11 +203,17 @@ class _CreateNewOperationDtoDialogState
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'الرتبة',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'الرتبة',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -237,11 +256,17 @@ class _CreateNewOperationDtoDialogState
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'رقم الموبايل',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'رقم الموبايل',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -270,11 +295,17 @@ class _CreateNewOperationDtoDialogState
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'التشخيص',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'التشخيص',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -292,11 +323,17 @@ class _CreateNewOperationDtoDialogState
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'العملية',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'العملية',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -314,11 +351,17 @@ class _CreateNewOperationDtoDialogState
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'الاستشاري',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                            ),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              SmBtn(),
+                              Text(
+                                'الاستشاري',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Padding(
@@ -337,7 +380,25 @@ class _CreateNewOperationDtoDialogState
                                 return DropdownMenuItem<String>(
                                   value: doc.id,
                                   alignment: Alignment.center,
-                                  child: Text(doc.name),
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: doc.name,
+                                      children: [
+                                        const TextSpan(text: ' : '),
+                                        const TextSpan(text: '('),
+                                        ...doc.speciality.map((e) {
+                                          final _index =
+                                              doc.speciality.indexOf(e);
+                                          if (_index >=
+                                              doc.speciality.length - 1) {
+                                            return TextSpan(text: e.name);
+                                          }
+                                          return TextSpan(text: '${e.name}, ');
+                                        }),
+                                        const TextSpan(text: ')'),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               })
                             ],

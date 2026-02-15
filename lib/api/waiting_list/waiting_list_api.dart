@@ -167,6 +167,7 @@ class WaitingListApi {
         'operation': operation.operation,
         'subspeciality': operation.subspeciality.id,
         'rank': operation.rank.id,
+        'consultant': operation.consultant.id,
       },
     );
   }

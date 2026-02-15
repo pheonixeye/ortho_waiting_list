@@ -20,16 +20,19 @@ class PxConstants extends ChangeNotifier {
     init();
   }
 
-  ApiResult<List<Doctor>>? _doctors;
+  static ApiResult<List<Doctor>>? _doctors;
   ApiResult<List<Doctor>>? get doctors => _doctors;
 
-  ApiResult<List<Rank>>? _ranks;
+  static ApiResult<List<Rank>>? _ranks;
   ApiResult<List<Rank>>? get ranks => _ranks;
 
-  ApiResult<List<Speciality>>? _specs;
+  static ApiResult<List<Speciality>>? _specs;
   ApiResult<List<Speciality>>? get specs => _specs;
 
   Future<void> init() async {
+    if (_doctors != null && _ranks != null && _specs != null) {
+      return;
+    }
     _doctors = await doctors_api.fetchDoctors();
     _ranks = await ranks_api.fetchRanks();
     _specs = await spec_api.fetchSpecialities();

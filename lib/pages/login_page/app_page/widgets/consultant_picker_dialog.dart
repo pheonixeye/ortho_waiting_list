@@ -79,6 +79,23 @@ class _ConsultantPickerDialogState extends State<ConsultantPickerDialog> {
                               padding: const EdgeInsets.all(8.0),
                               child: RadioListTile(
                                 title: Text(doc.name),
+                                subtitle: Row(
+                                  spacing: 8,
+                                  children: [
+                                    ...doc.speciality.map(
+                                      (e) {
+                                        final _index =
+                                            doc.speciality.indexOf(e);
+                                        if (_index >=
+                                            doc.speciality.length - 1) {
+                                          return Text(e.name);
+                                        } else {
+                                          return Text('${e.name} -');
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
                                 value: doc,
                               ),
                             ),
